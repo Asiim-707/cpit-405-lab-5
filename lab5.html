@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NBA Player Stats Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #333;
+            transition: background-color 0.5s, color 0.5s;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input, select {
+            padding: 8px;
+            margin-bottom: 10px;
+            width: 200px;
+            font-size: 14px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        button {
+            padding: 8px 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            background-color: #555;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background-color: #333;
+        }
+
+        body.dark-mode {
+            background-color: #222;
+            color: #f8f9fa;
+        }
+
+        body.dark-mode .container {
+            background-color: #333;
+            color: #fff;
+        }
+
+        body.dark-mode table {
+            color: #fff;
+        }
+
+        body.dark-mode th {
+            background-color: #444;
+        }
+    </style>
+</head>
+<body>
+    <h1>NBA Player Stats Dashboard</h1>
+    <div class="container">
+        <button id="dark-mode-toggle">Toggle Dark Mode</button><br>
+        <input type="text" id="search" placeholder="Search players..." />
+        <select id="team-filter">
+            <option value="All">All</option>
+            <option value="PHI">PHI</option>
+            <option value="NYK">NYK</option>
+            <option value="OKC">OKC</option>
+            <option value="CLE">CLE</option>
+        </select>
+        <table>
+            <thead>
+                <tr>
+                    <th data-column="name">Name</th>
+                    <th data-column="team">Team</th>
+                    <th data-column="points">Points</th>
+                    <th data-column="rebounds">Rebounds</th>
+                    <th data-column="assists">Assists</th>
+                </tr>
+            </thead>
+            <tbody id="player-table-body"></tbody>
+        </table>
+    </div>
+
+    <script>
+        const players = [
+            { name: "Joel Embiid", team: "PHI", points: 33, rebounds: 10.8, assists: 5.7 },
+            { name: "Jalen Brunson", team: "NYK", points: 32.4, rebounds: 3.3, assists: 7.5 },
+            { name: "Shai Gilgeous-Alexander", team: "OKC", points: 30.2, rebounds: 7.2, assists: 6.4 },
+            { name: "Tyrese Maxey", team: "PHI", points: 29.8, rebounds: 5.2, assists: 6.8 },
+            { name: "Donovan Mitchell", team: "CLE", points: 29.6, rebounds: 5.4, assists: 4.7 }
+        ];
+
+        const tableBody = document.getElementById('player-table-body');
+        const searchInput = document.getElementById('search');
+        const teamFilter = document.getElementById('team-filter');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        let darkMode = false;
+
+        function renderTable(data) {
+            tableBody.innerHTML = '';
+            data.forEach(player => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${player.name}</td>
+                    <td>${player.team}</td>
+                    <td>${player.points}</td>
+                    <td>${player.rebounds}</td>
+                    <td>${player.assists}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function filterTable() {
+            const searchText = searchInput.value.toLowerCase();
+            const selectedTeam = teamFilter.value;
+
+            const filteredData = players.filter(player => {
+                const matchesSearch = player.name.toLowerCase().includes(searchText);
+                const matchesTeam = selectedTeam === 'All' || player.team === selectedTeam;
+                return matchesSearch && matchesTeam;
+            });
+
+            renderTable(filteredData);
+        }
+
+        function toggleDarkMode() {
+            darkMode = !darkMode;
+            document.body.classList.toggle('dark-mode', darkMode);
+        }
+
+        searchInput.addEventListener('input', filterTable);
+        teamFilter.addEventListener('change', filterTable);
+        darkModeToggle.addEventListener('click', toggleDarkMode);
+
+        renderTable(players);
+    </script>
+</body>
+</html>
